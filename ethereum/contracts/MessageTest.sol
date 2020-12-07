@@ -10,12 +10,22 @@ struct Message {
 
 contract MessageTest {
 
-    uint something;
+    event Called(uint numMessages, uint callDataLength);
+    event Verified(bytes32 commitment);
 
-    function verifyAndDispatch(bytes32 blockHash, Message[] calldata messages) external {
+    function verifyAndDispatch(bytes32 _blockHash, Message[] calldata messages) external {
+        bytes memory messageData;
+        assembly {
+            messageData := mload(0x40)
+            calldatacopy(messageData, 36, sub(calldatasize(), 36))
+        }
 
-        something = something + 1;
+        emit Called(messages.length, uint(msg.data.length));
+    }
 
+    function verifyFoo(bytes memory messageData) public {
+        bytes32 commitment = keccak256(messageData);
+        emit Verified(commitment);
     }
 
 }
