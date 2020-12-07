@@ -4,6 +4,7 @@ const ETHApp = artifacts.require("ETHApp");
 const ERC20App = artifacts.require("ERC20App");
 const Bridge = artifacts.require("Bridge");
 const TestToken = artifacts.require("TestToken");
+const MessageTest = artifacts.require("MessageTest");
 
 module.exports = function(deployer, network, accounts) {
   deployer.then(async () => {
@@ -23,5 +24,7 @@ module.exports = function(deployer, network, accounts) {
 
     // Deploy TEST ERC20 token for testing
     await deployer.deploy(TestToken, 100000000, "Test Token", "TEST");
+
+    await deployer.deploy(MessageTest);
   })
 };
