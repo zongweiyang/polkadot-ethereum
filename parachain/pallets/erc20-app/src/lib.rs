@@ -27,7 +27,7 @@ use frame_support::{
 	dispatch::DispatchResult,
 };
 
-use artemis_core::{Application, BridgedAssetId, Commitments};
+use artemis_core::{Application, BridgedAssetId, Commitments, VerificationOutput};
 use artemis_asset as asset;
 
 mod payload;
@@ -121,9 +121,10 @@ impl<T: Trait> Module<T> {
 }
 
 impl<T: Trait> Application for Module<T> {
-	fn handle(payload: &[u8]) -> DispatchResult {
+	fn handle(payload: &[u8], _verification_output: &VerificationOutput) -> DispatchResult {
 		let payload_decoded = InPayload::decode(payload)
 			.map_err(|_| Error::<T>::InvalidPayload)?;
+		// TODO: check that payload event exists in VerificationOutput.Receipt
 
 		Self::handle_event(payload_decoded)
 	}

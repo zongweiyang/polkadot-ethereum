@@ -6,7 +6,7 @@
 #![allow(unused_variables)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use frame_support::dispatch::DispatchResult;
+use frame_support::dispatch::{DispatchError, DispatchResult};
 
 use sp_std::prelude::*;
 use sp_core::H160;
@@ -17,6 +17,7 @@ pub use types::{
 	AppId,
 	Message,
 	VerificationInput,
+	VerificationOutput,
 	BridgedAssetId
 };
 
@@ -25,7 +26,7 @@ pub use types::{
 /// This trait should be implemented by runtime modules that wish to provide message verification functionality.
 pub trait Verifier<AccountId> {
 
-	fn verify(sender: AccountId, app_id: AppId, message: &Message) -> DispatchResult;
+	fn verify(sender: AccountId, app_id: AppId, message: &Message) -> Result<VerificationOutput, DispatchError>;
 }
 
 /// A trait for handling message payloads.
@@ -34,7 +35,7 @@ pub trait Verifier<AccountId> {
 pub trait Application {
 
 	/// Handle a message payload
-	fn handle(payload: &[u8]) -> DispatchResult;
+	fn handle(payload: &[u8], verification_output: &VerificationOutput) -> DispatchResult;
 
 	fn address() -> H160;
 }
